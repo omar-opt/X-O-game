@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tic-tac</title>
+  </head>
+  <style>
+    body {
+      display: flex;
+    }
+    .game {
+      width: full;
+      margin: auto;
+      text-align: center;
+    }
+    .containerBoxs {
+      display: grid;
+      grid-template-columns: repeat(3, auto);
+      width: 210px;
+      margin: auto;
+    }
+    .box {
+      width: 70px;
+      height: 70px;
+      border: 1px solid;
+      font-size: 50px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .titel_game {
+      margin: 20%;
+      text-align: center;
+    }
+    button {
+      padding: 10px;
+      font-size: 25px;
+      margin: 10px;
+    }
+    .choose {
+      display: flex;
+    }
+    .status {
+      position: absolute;
+      width: 215px;
+      height: 200px;
+      margin: auto;
+      background-color: rgb(132, 209, 209);
+      border: 1px solid rosybrown;
+      z-index: 20;
+      border-radius: 30px;
+      justify-self: center;
+
+      text-align: center;
+    }
+    .status button {
+      padding: 10px;
+      font-size: 25px;
+      margin: 10px;
+      border-radius: 40px;
+      color: rgb(230, 224, 224);
+      background: rgb(10, 40, 75);
+    }
+    .status p {
+      font-size: larger;
+      margin: 40px;
+      color: rgb(73, 60, 60);
+      text-align: center;
+    }
+    .display {
+      display: none;
+    }
+  </style>
+  <body>
+    <div class="game">
+      <div>
+        <h1>Tic Tao</h1>
+      </div>
+      <div>
+        <div class="titel_game">
+          <p>choose one</p>
+          <div class="choose">
+            <button id="x" onclick="{handelX()}">X</button>
+            <button id="o" onclick="{handelO()}">O</button>
+          </div>
+        </div>
+        <div class="status Winer display">
+          <p>Winer winer chiken dinner</p>
+          <button onclick="{restart()}">restart</button>
+        </div>
+        <div class="status Loser display">
+          <p>Loser try again</p>
+          <button onclick="{restart()}">restart</button>
+        </div>
+        <div class="containerBoxs">
+          <div cellid="0" class="box"></div>
+          <div cellid="1" class="box"></div>
+          <div cellid="2" class="box"></div>
+          <div cellid="3" class="box"></div>
+          <div cellid="4" class="box"></div>
+          <div cellid="5" class="box"></div>
+          <div cellid="6" class="box"></div>
+          <div cellid="7" class="box"></div>
+          <div cellid="8" class="box"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    // varibel that needed in the game
+    let userChoice;
+    let computerChoice;
+    let place = ["", "", "", "", "", "", "", "", ""];
+    let game = false;
+    const Winers = document.querySelector(".Winer");
+    const Losers = document.querySelector(".Loser");
+    const boxs = document.querySelectorAll(".box");
+    const WinerCase = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    // let numberGames = 0;
+    //functions of the game
+    function handelX() {
+      userChoice = "x";
+      computerChoice = "O";
+      startGame();
+    }
+
+    function handelO() {
+      userChoice = "O";
+      computerChoice = "X";
+      startGame();
+    }
+
+    function startGame() {
+      game = true;
+      boxs.forEach((box) => box.addEventListener("click", clickedBox));
+    }
+
+    function clickedBox() {
+      const boxIndex = this.getAttribute("cellid");
+      updatePlace(this, boxIndex);
+    }
+    function updatePlace(element, boxIndex) {
+      place[boxIndex] = userChoice;
+      console.log(place);
+      element.textContent = userChoice;
+      checkWiner();
+      computerTurn();
+    }
+    function computerTurn() {
+      let emptyPlace = [];
+      for (let i = 0; i < place.length; i++) {
+        if (place[i] == "") {
+          emptyPlace.push(i);
+        }
+      }
+      let random = emptyPlace[Math.floor(Math.random() * emptyPlace.length)];
+      place[random] = computerChoice;
+      boxs[random].textContent = computerChoice;
+      checkWiner();
+    }
+    function checkWiner() {
+      let winer;
+      for (let i = 0; i < WinerCase.length; i++) {
+        const [a, b, c] = WinerCase[i];
+
+        if (
+          place[a] == userChoice &&
+          place[b] == userChoice &&
+          place[c] == userChoice
+        ) {
+          Winer();
+        }
+        if (
+          place[a] == computerChoice &&
+          place[b] == computerChoice &&
+          place[c] == computerChoice
+        ) {
+          Loser();
+        }
+      }
+    }
+    function Winer() {
+      game = false;
+      Winers.classList.remove("display");
+    }
+    function Loser() {
+      game = false;
+      Losers.classList.remove("display");
+    }
+    function restart() {
+      place = ["", "", "", "", "", "", "", "", ""];
+      boxs.forEach((box) => (box.textContent = " "));
+      const status = document.querySelectorAll(".status");
+      console.log(status.classList, "ddddddd");
+      status.forEach((stat) => {
+        stat.classList.add("display");
+      });
+    }
+  </script>
+</html>
