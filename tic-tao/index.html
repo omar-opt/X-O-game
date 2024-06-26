@@ -43,28 +43,28 @@
     .status {
       position: absolute;
       width: 215px;
-      height: 200px;
-      margin: auto;
-      background-color: rgb(132, 209, 209);
-      border: 1px solid rosybrown;
+      height: 150px;
+      background-color: rgba(73, 60, 132, 0.692);
+      border: 1px solid white;
       z-index: 20;
       border-radius: 30px;
       justify-self: center;
-
+      backdrop-filter: 10px transparent transparent transparent;
       text-align: center;
     }
     .status button {
-      padding: 10px;
-      font-size: 25px;
-      margin: 10px;
+      margin-top: -10px;
+      padding: 5px;
+      font-size: 20px;
       border-radius: 40px;
-      color: rgb(230, 224, 224);
-      background: rgb(10, 40, 75);
+      border-color: rgb(255, 255, 255);
+      color: white;
+      background: rgba(120, 184, 118, 0.786);
     }
     .status p {
       font-size: larger;
       margin: 40px;
-      color: rgb(73, 60, 60);
+      color: white;
       text-align: center;
     }
     .display {
@@ -85,11 +85,15 @@
           </div>
         </div>
         <div class="status Winer display">
-          <p>Winer winer chiken dinner</p>
+          <p>Winer</p>
           <button onclick="{restart()}">restart</button>
         </div>
         <div class="status Loser display">
           <p>Loser try again</p>
+          <button onclick="{restart()}">restart</button>
+        </div>
+        <div class="status tai display">
+          <p>Taiii</p>
           <button onclick="{restart()}">restart</button>
         </div>
         <div class="containerBoxs">
@@ -114,6 +118,7 @@
     let game = false;
     const Winers = document.querySelector(".Winer");
     const Losers = document.querySelector(".Loser");
+    const Taii = document.querySelector(".tai");
     const boxs = document.querySelectorAll(".box");
     const WinerCase = [
       [0, 1, 2],
@@ -128,7 +133,7 @@
     // let numberGames = 0;
     //functions of the game
     function handelX() {
-      userChoice = "x";
+      userChoice = "X";
       computerChoice = "O";
       startGame();
     }
@@ -149,11 +154,13 @@
       updatePlace(this, boxIndex);
     }
     function updatePlace(element, boxIndex) {
-      place[boxIndex] = userChoice;
-      console.log(place);
-      element.textContent = userChoice;
-      checkWiner();
-      computerTurn();
+      if (place[boxIndex] == "") {
+        place[boxIndex] = userChoice;
+        element.textContent = userChoice;
+        checkWiner();
+        computerTurn();
+        // console.log(place);
+      }
     }
     function computerTurn() {
       let emptyPlace = [];
@@ -167,8 +174,23 @@
       boxs[random].textContent = computerChoice;
       checkWiner();
     }
+    function Tai() {
+      game = false;
+      Taii.classList.remove("display");
+    }
+    function Winer() {
+      game = false;
+      Winers.classList.remove("display");
+      return 0;
+    }
+    function Loser() {
+      game = false;
+      Losers.classList.remove("display");
+      return 0;
+    }
     function checkWiner() {
-      let winer;
+      let winer = false;
+      let tai = false;
       for (let i = 0; i < WinerCase.length; i++) {
         const [a, b, c] = WinerCase[i];
 
@@ -177,30 +199,39 @@
           place[b] == userChoice &&
           place[c] == userChoice
         ) {
+          winer = true;
           Winer();
-        }
-        if (
+          return 0;
+        } else if (
           place[a] == computerChoice &&
           place[b] == computerChoice &&
           place[c] == computerChoice
         ) {
+          winer = true;
           Loser();
+          return 0;
         }
       }
-    }
-    function Winer() {
-      game = false;
-      Winers.classList.remove("display");
-    }
-    function Loser() {
-      game = false;
-      Losers.classList.remove("display");
+
+      if (!winer) {
+        let i = 0;
+        while (!tai && i < place.length) {
+          if (place[i] == "") {
+            tai = true;
+          }
+          i++;
+          console.log(place[i], "break for");
+        }
+        if (!tai) {
+          Tai();
+        }
+      }
     }
     function restart() {
       place = ["", "", "", "", "", "", "", "", ""];
       boxs.forEach((box) => (box.textContent = " "));
       const status = document.querySelectorAll(".status");
-      console.log(status.classList, "ddddddd");
+      // console.log(status.classList, "ssss");
       status.forEach((stat) => {
         stat.classList.add("display");
       });
